@@ -10,3 +10,5 @@ _(In fact even millions of files because a [red-black tree](https://en.wikipedia
 If you ever happen to close the app while its running : dont worry, no harm will be done and it will start over next time you run the app.
 
 Keep in mind : Duplicates will be removed AUTOMATICALLY, **this programm will delete files**
+
+# [DOWNLOAD](/releases/latest)
