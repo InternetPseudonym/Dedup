@@ -9,6 +9,6 @@ It is designed with large filesets in mind, even tens or hundreds of thousands o
 _(In fact even millions of files because a [red-black tree](https://en.wikipedia.org/wiki/Red%E2%80%93black_tree) memory algorithm is used)_
 If you ever happen to close the app while its running : dont worry, no harm will be done and it will start over next time you run the app.
 
-Keep in mind : Duplicates will be removed AUTOMATICALLY, **this programm will delete files**
+Keep in mind : Duplicates will be removed AUTOMATICALLY, **this program will delete files**
 
 # [DOWNLOAD](https://github.com/DanielMack/Dedup/releases/tag/0.1)
