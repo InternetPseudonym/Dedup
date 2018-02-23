@@ -11,4 +11,4 @@ If you ever happen to close the app while its running : dont worry, no harm will
 
 Keep in mind : Duplicates will be removed AUTOMATICALLY, **this programm will delete files**
 
-# [DOWNLOAD](/releases/latest)
+# [DOWNLOAD](Dedup/releases/latest)
