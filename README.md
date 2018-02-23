@@ -11,4 +11,4 @@ If you ever happen to close the app while its running : dont worry, no harm will
 
 Keep in mind : Duplicates will be removed AUTOMATICALLY, **this programm will delete files**
 
-# [DOWNLOAD](https://github.com/DanielMack/Dedup/tree/0.1)
+# [DOWNLOAD](https://github.com/DanielMack/Dedup/releases/tag/0.1)
