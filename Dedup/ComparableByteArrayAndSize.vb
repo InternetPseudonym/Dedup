@@ -1,6 +1,4 @@
-﻿Imports Dedup
-
-Public Class ComparableByteArrayAndSize
+﻿Public Class ComparableByteArrayAndSize
     Implements IComparable(Of ComparableByteArrayAndSize)
 
     Private array As Byte()
@@ -21,4 +19,7 @@ Public Class ComparableByteArrayAndSize
         Return array.SequenceEqual(other.array)
     End Function
 
+    Public NotOverridable Overrides Function ToString() As String
+        Return BitConverter.ToString(Me.array)
+    End Function
 End Class

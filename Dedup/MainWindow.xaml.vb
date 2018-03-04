@@ -6,87 +6,113 @@ Imports C5
 
 Class MainWindow
 
+#Region "member variables"
     Private ReadOnly hashes As New TreeDictionary(Of ComparableByteArrayAndSize, String)
-    Private ReadOnly md5 As MD5 = MD5.Create
-    Private Shared ReadOnly remainingFiles As New Queue(Of String)
-    Private Shared ReadOnly waitHandle As New EventWaitHandle(False, EventResetMode.AutoReset)
+    Private ReadOnly md5 As MD5 = MD5.Create()
     Private Shared exitSignal As Boolean = False
+#End Region
 
+#Region "event handler"
 
     Private Sub browseClicked() Handles btnFolderBrowse.Click
 
         Dim dlg As New FolderBrowserDialog()
         dlg.ShowNewFolderButton = False
 
-
         dlg.ShowDialog()
 
-        ThreadPool.QueueUserWorkItem(Sub() mainThread(dlg.SelectedPath))
+        btnFolderBrowse.IsEnabled = False
+        tabControl.SelectedItem = tabItemList
+
+        If dlg.SelectedPath IsNot Nothing AndAlso dlg.SelectedPath.Length > 0 Then
+            ThreadPool.QueueUserWorkItem(Sub() hashingThread(dlg.SelectedPath))
+        End If
 
     End Sub
 
-    Private Sub mainThread(path As String)
-        Dispatcher.Invoke(Sub() progress.IsIndeterminate = True)
-        Console.WriteLine("generating queue ...")
-        generateQueue(path)
-        Console.WriteLine("queue created!")
-        Dispatcher.Invoke(Sub() progress.IsIndeterminate = False)
-        Console.WriteLine("Starting first task ...")
-        Task.Factory.StartNew(Sub() calcMd5(remainingFiles.Dequeue()))
-
-        While (False = exitSignal And waitHandle.WaitOne())
-            'Console.WriteLine("next thread ...")
-            Task.Factory.StartNew(Sub() calcMd5(remainingFiles.Dequeue()))
-        End While
-
+    Private Sub onExitButtonPressed() Handles Me.Closed
+        exitSignal = True
     End Sub
+#End Region
 
-    Private Sub generateQueue(path As String)
+#Region "threads"
+    Private Sub hashingThread(path As String)
 
-        Dim files As IEnumerable(Of String) = Directory.EnumerateFiles(path)
+        Dim hash As Byte() = Nothing
+        Dim hashAndSize As ComparableByteArrayAndSize = Nothing
+        Dim stream As FileStream = Nothing
 
-        Console.WriteLine("detected " & files.Count & " files in selected directory")
+        Console.WriteLine("Starting MD5 task ...")
+
+        Dim fileList As IEnumerable(Of String) = Nothing
+        Try
+            fileList = Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories)
+        Catch ex As Exception
+            MessageBox.Show("error during filesystem path iteration attempt : \n" & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Dispatcher.Invoke(Sub()
+                                  btnFolderBrowse.IsEnabled = True
+                                  tabControl.SelectedItem = tabItemFolder
+                              End Sub)
+            Exit Sub
+        End Try
+
+        If fileList Is Nothing Then
+            MessageBox.Show("list of selected files cannot be obtained", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Dispatcher.Invoke(Sub()
+                                  btnFolderBrowse.IsEnabled = True
+                                  tabControl.SelectedItem = tabItemFolder
+                              End Sub)
+            Exit Sub
+        End If
+
         Dispatcher.Invoke(Sub()
-                              progress.Value = 0
-                              progress.Maximum = files.Count
+                              progress.Maximum = fileList.Count
+                              list.Items.Clear()
                           End Sub)
 
-        Dim i As Integer = 1
-        For Each file As String In files
-            Console.WriteLine("queueing file no. " & i)
-            If (remainingFiles.Count > 0) Then
-                remainingFiles.Enqueue(file)
+        For Each file As String In fileList
+
+            Try
+                stream = IO.File.OpenRead(file)
+            Catch ex As Exception
+                Console.Error.WriteLine("file " & file & " cannot be read")
+                stream.Close()
+                Continue For
+            End Try
+
+            Dispatcher.Invoke(Sub() labelFilename.Content = IO.Path.GetFileName(file))
+
+
+            Try
+                hash = md5.ComputeHash(stream)
+                hashAndSize = New ComparableByteArrayAndSize(hash, stream.Length)
+            Catch e As ObjectDisposedException
+                Console.Error.WriteLine("Hash of file " & file & " cannot be computed, file-handle closed")
+                Continue For
+            Finally
+                stream.Close()
+            End Try
+
+
+            Dispatcher.Invoke(Sub() list.Items.Add(New ListViewEntry(hash, file)))
+            If (False = hashes.Contains(hashAndSize)) Then
+                hashes.Add(hashAndSize, file)
             Else
-                remainingFiles.Enqueue(file)
+                Console.WriteLine("DUPLICATE DETECTED : " & IO.Path.GetFileName(file))
+
             End If
 
-            i += 1
+            Dispatcher.Invoke(Sub() progress.Value += 1)
+
+
         Next
+
+        Dispatcher.Invoke(Sub()
+                              btnFolderBrowse.IsEnabled = True
+                              tabControl.SelectedItem = tabItemFolder
+                          End Sub)
+
     End Sub
-
-
-
-    Private Sub calcMd5(path As String)
-        Dim stream As FileStream = File.Open(path, FileMode.Open)
-        Dispatcher.Invoke(Sub() labelFilename.Content = IO.Path.GetFileName(path))
-        Dim hash As New ComparableByteArrayAndSize(md5.ComputeHash(stream), stream.Length)
-        Dim delete As Boolean = False
-        If (False = hashes.Contains(hash)) Then
-            hashes.Add(hash, path)
-        Else
-            Console.WriteLine("DUPLICATE DETECTED : " & IO.Path.GetFileName(path))
-            delete = True
-
-        End If
-
-        Dispatcher.Invoke(Sub() progress.Value += 1)
-        stream.Close()
-        If delete = True Then
-            File.Delete(path)
-            Console.WriteLine("... deleted")
-        End If
-        waitHandle.Set()
-    End Sub
-
+#End Region
 
 End Class

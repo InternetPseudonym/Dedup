@@ -4,18 +4,47 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dedup"
-        mc:Ignorable="d"
-        Title="Dedup" Height="192" Width="488.993" WindowStartupLocation="CenterScreen">
-    <Grid Margin="0,0,2,1">
+        mc:Ignorable="d">
+    <Grid Width="Auto" Height="Auto" HorizontalAlignment="Left" VerticalAlignment="Top">
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition />
-            <RowDefinition/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Button x:Name="btnFolderBrowse" Content="Ordner auswählen" HorizontalAlignment="Left" Height="22" Margin="175,25,0,0" VerticalAlignment="Top" Width="137" Grid.Row="0"/>
-        <ProgressBar x:Name="progress" HorizontalAlignment="Left" Height="10" Margin="10,24,0,0" VerticalAlignment="Top" Width="447" Grid.Row="1"/>
-        <Label x:Name="label" Content="In Berechnung : " HorizontalAlignment="Left" Margin="10,16,0,0" VerticalAlignment="Top" Height="32" Width="104" Grid.Row="2"/>
-        <Label x:Name="labelFilename" Content="" HorizontalAlignment="Left" Height="25" Margin="119,16,0,0" Grid.Row="2" VerticalAlignment="Top" Width="254"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <TabControl VerticalAlignment="Center" x:Name="tabControl" 
+                   Grid.Row="0" Grid.Column="0" 
+                    ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalAlignment="Center">
+            <TabItem Header="Folder selection" x:Name="tabItemFolder">
+                <StackPanel>
+                    <Button x:Name="btnFolderBrowse" Content="Ordner auswählen" HorizontalAlignment="Center" VerticalAlignment="Center" DockPanel.Dock="Top" Margin="10"/>
 
+
+
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="file list" x:Name="tabItemList">
+
+                <StackPanel MaxHeight="500">
+                    <ProgressBar x:Name="progress" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="200" MinHeight="15" Margin="10,0"/>
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Margin="10,0" VerticalAlignment="Center" HorizontalAlignment="Left" >
+                        <Label x:Name="label" Content="currently reading: " HorizontalAlignment="Center" VerticalAlignment="Center" DockPanel.Dock="Bottom"/>
+                        <Label x:Name="labelFilename" Content="" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" DockPanel.Dock="Bottom" MinWidth="100"/>
+
+                    </StackPanel>
+                    <ListView x:Name="list" MinHeight="50" MinWidth="500">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Filename" Width="300" DisplayMemberBinding="{Binding Path=Filename}"/>
+                                <GridViewColumn Header="Checksum" Width="200" DisplayMemberBinding="{Binding Path=Checksum}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
+
+            </TabItem>
+        </TabControl>
     </Grid>
+
+
 </Window>
