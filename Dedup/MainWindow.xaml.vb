@@ -14,6 +14,10 @@ Class MainWindow
 
 #Region "event handler"
 
+    Private Sub windowSizeChanged(sender As Object, evt As SizeChangedEventArgs) Handles Me.SizeChanged
+
+    End Sub
+
     Private Sub browseClicked() Handles btnFolderBrowse.Click
 
         Dim dlg As New FolderBrowserDialog()
