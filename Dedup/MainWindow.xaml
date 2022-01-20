@@ -13,7 +13,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Button x:Name="btnFolderBrowse" Content="Ordner auswählen" HorizontalAlignment="Left" Height="22" Margin="175,25,0,0" VerticalAlignment="Top" Width="137" Grid.Row="0"/>
-        <ProgressBar x:Name="progress" HorizontalAlignment="Left" Height="10" Margin="10,24,0,0" VerticalAlignment="Top" Width="447" Grid.Row="1"/>
+        <ProgressBar x:Name="progress"  HorizontalAlignment="Left" Height="10" Margin="10,24,0,0" VerticalAlignment="Top" Width="447" Grid.Row="1" />
         <Label x:Name="label" Content="In Berechnung : " HorizontalAlignment="Left" Margin="10,16,0,0" VerticalAlignment="Top" Height="32" Width="104" Grid.Row="2"/>
         <Label x:Name="labelFilename" Content="" HorizontalAlignment="Left" Height="25" Margin="119,16,0,0" Grid.Row="2" VerticalAlignment="Top" Width="254"/>
 
