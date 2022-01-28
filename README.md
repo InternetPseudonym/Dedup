@@ -11,6 +11,4 @@ If you ever happen to close the app while its running : dont worry, no harm will
 
 Keep in mind : Duplicates will be removed AUTOMATICALLY, **this program will delete files**
 
-# [DOWNLOAD](https://github.com/InternetPseudonym/Dedup/releases/tag/0.1)
-
-[Virustotal scan of main EXE, ver 0.1](https://www.virustotal.com/de/file/196291a0eb71aa1c97cd504579cc037b18a7292d67cce83cb4af7a4d6e41bbf1/analysis/1520192739/)
+# [DOWNLOAD SOURCE](https://github.com/InternetPseudonym/Dedup/releases/tag/0.1)
